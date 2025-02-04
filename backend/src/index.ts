@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 import express from "express";
 import cors from "cors";
 import { WebSocketServer, WebSocket } from "ws";
@@ -7,8 +9,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const server = app.listen( 3001, () => {
-    console.log("Server running on port 3001");
+const server = app.listen( process.env.PORT || 3000, () => {
+    console.log("Server running on port 8080");
 })
 
 const ws = new WebSocketServer({ server });

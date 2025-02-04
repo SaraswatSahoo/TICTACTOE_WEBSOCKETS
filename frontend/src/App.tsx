@@ -16,11 +16,13 @@ function App() {
     const nameRef = useRef<HTMLInputElement | null>(null);
     const [ waiting, setWaiting ] = useState(false);
 
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
     useEffect(() => {
 
         try{
 
-            const ws = new WebSocket("ws://localhost:3001");
+            const ws = new WebSocket(BACKEND_URL);
             wsRef.current = ws;
 
             ws.onmessage = (event) => {
