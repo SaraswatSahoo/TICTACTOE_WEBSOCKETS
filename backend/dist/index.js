@@ -27,26 +27,63 @@ ws.on("connection", (socket) => {
                     symbol: (game.length) ? 'O' : 'X'
                 });
                 if (game.length === 2) {
+                    let disabled;
                     game.map(player => {
-                        player.socket.send(JSON.stringify({
-                            type: "start",
-                            payload: {
-                                game
-                            }
-                        }));
+                        if (player.symbol === 'X') {
+                            player.socket.send(JSON.stringify({
+                                type: "start",
+                                payload: {
+                                    game,
+                                    disabled: false
+                                }
+                            }));
+                        }
+                        else {
+                            player.socket.send(JSON.stringify({
+                                type: "start",
+                                payload: {
+                                    game,
+                                    disabled: true
+                                }
+                            }));
+                        }
                     });
                 }
             }
         }
         else {
             if (parsedMessage.type === "move") {
+                let disabled;
                 game.map(x => {
-                    x.socket.send(JSON.stringify(parsedMessage));
+                    if (parsedMessage.payload.move === x.symbol) {
+                        x.socket.send(JSON.stringify({
+                            parsedMessage,
+                            disabled: false
+                        }));
+                    }
+                    else {
+                        x.socket.send(JSON.stringify({
+                            parsedMessage,
+                            disabled: true
+                        }));
+                    }
                 });
             }
             if (parsedMessage.type === "reset") {
+                let disabled;
                 game.map(x => {
-                    x.socket.send(JSON.stringify(parsedMessage));
+                    if (parsedMessage.payload.move === x.symbol) {
+                        x.socket.send(JSON.stringify({
+                            parsedMessage,
+                            disabled: false
+                        }));
+                    }
+                    else {
+                        x.socket.send(JSON.stringify({
+                            parsedMessage,
+                            disabled: true
+                        }));
+                    }
                 });
             }
         }

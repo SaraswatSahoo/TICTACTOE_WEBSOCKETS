@@ -41,13 +41,25 @@ ws.on("connection", (socket) => {
                 })
 
                 if(game.length === 2){
-                    game.map( player => {
+                    let disabled;
+                    game.map( player => { if(player.symbol === 'X'){
                         player.socket.send(JSON.stringify({
                             type: "start",
                             payload:{
-                                game
+                                game,
+                                disabled: false
                             }
                         }))
+                    } else {
+                        player.socket.send(JSON.stringify({
+                            type: "start",
+                            payload:{
+                                game,
+                                disabled: true
+                            }
+                        }))
+                    }
+                        
                     })
                 }
                 
@@ -56,14 +68,36 @@ ws.on("connection", (socket) => {
         } else {
 
             if(parsedMessage.type === "move"){
-                game.map(x => {
-                    x.socket.send(JSON.stringify(parsedMessage))
+                let disabled;
+                game.map(x => { if(parsedMessage.payload.move === x.symbol){
+                    x.socket.send(JSON.stringify({
+                        parsedMessage,
+                        disabled: false
+                    }))
+                } else {
+                    x.socket.send(JSON.stringify({
+                        parsedMessage,
+                        disabled: true
+                    }))
+                }
+                    
                 })
             }
 
             if(parsedMessage.type === "reset"){
-                game.map(x => {
-                    x.socket.send(JSON.stringify(parsedMessage))
+                let disabled;
+                game.map(x => { if(parsedMessage.payload.move === x.symbol) {
+                    x.socket.send(JSON.stringify({
+                        parsedMessage,
+                        disabled: false
+                    })) 
+                } else {
+                    x.socket.send(JSON.stringify({
+                        parsedMessage,
+                        disabled: true
+                    }))
+                }
+                    
                 })
             }
 

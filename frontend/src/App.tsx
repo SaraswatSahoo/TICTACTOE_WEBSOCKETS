@@ -15,6 +15,7 @@ function App() {
     const wsRef = useRef<WebSocket | null>(null);
     const nameRef = useRef<HTMLInputElement | null>(null);
     const [ waiting, setWaiting ] = useState(false);
+    const [ disable, setDisable ] = useState(false);
 
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -34,17 +35,20 @@ function App() {
 
                     setPlayers(data?.payload?.game);
                     setWaiting(false);
+                    setDisable(data?.payload?.disabled)
 
-                } else if(data?.type === 'move'){
+                } else if(data?.parsedMessage?.type === 'move'){
 
-                    setSymbol(data?.payload?.board);
-                    setMove(data?.payload?.move);
+                    setSymbol(data?.parsedMessage?.payload?.board);
+                    setMove(data?.parsedMessage?.payload?.move);
+                    setDisable(data?.disabled)
 
-                } else if(data?.type === 'reset'){
+                } else if(data?.parsedMessage?.type === 'reset'){
 
-                    setSymbol(data?.payload?.symbol);
-                    setMove(data?.payload?.move);
-                    setWinner(data?.payload?.winner);
+                    setSymbol(data?.parsedMessage?.payload?.symbol);
+                    setMove(data?.parsedMessage?.payload?.move);
+                    setWinner(data?.parsedMessage?.payload?.winner);
+                    setDisable(data?.disabled)
 
                 }
 
@@ -203,6 +207,7 @@ function App() {
                                     id={index.toString()} 
                                     symbol={x}
                                     onClick={() => changeMove( index )}
+                                    disable={disable}
                                 />
                             )}
                         </div>
